@@ -8,7 +8,11 @@
         redises, zk, queue, replicator;
 
     if (args.length < 7) {
+        console.error("Pushes a replication task to the queue.");
         console.error("Usage: backpack-replicator <zk_servers> </zk/root> <redis_servers> <redis_key> <from> <to> </path>");
+        console.error("    from: Array of source node ids to download from");
+        console.error("    to:   Destination node id to replicate to");
+        console.error("    path: Path to replicate");
         process.exit(1);
     }
 
@@ -23,12 +27,12 @@
             throw error;
         }
 
-        console.log("Zookeeper session started, getting map..")
+        console.log("Zookeeper session started, getting the map..");
 
         zk.get("/servers-map", function(error, map) {
             if (error) {
                 if (error == zk.errors.NONODE) {
-                    throw new Error("Map node not found in zk!");
+                    throw new Error("Can't find the map node in the zookeeper!");
                 } else {
                     throw error;
                 }
